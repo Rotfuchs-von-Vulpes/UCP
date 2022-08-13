@@ -1,21 +1,16 @@
 import express from 'express';
-
 import { Request, Response } from 'express';
-
-import 'dotenv/config';
-import bcrypt from 'bcrypt';
-
+import sha256 from 'sha256';
+import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 const app = express();
 
-let salt = bcrypt.genSaltSync(10);
-
 let port = 3000;
 
-// app.use(cors());
+app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
 
@@ -34,24 +29,31 @@ app.get('/', (req: Request, res: Response) => {
 app.post('/register', (req: Request, res: Response) => {
 	let user = req.body;
 
-	prisma.user
-		.findUnique({ where: { Email: user.email }})
-		.then((userValue) => {
+	console.log(user)
+
+	prisma.authme
+		.findUnique({ where: { Usuario: user.nick }})
+		.then(async (userValue) => {
 			if (userValue) {
 				res.send({
 					success: false,
-					message: 'Esse email já esta cadastrado.',
+					message: 'Esse nome de usuário já esta cadastrado.',
 				});
 			} else {
-				user.password = bcrypt.hashSync(user.password, salt);
+				user.password = sha256(user.password);
 				console.log(user);
 
-				prisma.user.create({ data: {
-					Usuario: user.nickname,
+				await prisma.authme.create({ data: {
+					Usuario: user.nick,
 					NomeReal: user.name,
 					Senha: user.password,
 					Email: user.email
 				}});
+
+				res.send({
+					success: true,
+					message: 'Registrado com sucesso',
+				});
 			}
 		})
 		.catch((err) => {
@@ -67,11 +69,11 @@ app.post('/register', (req: Request, res: Response) => {
 app.post('/login', (req: Request, res: Response) => {
 	let data = req.body;
 
-	prisma.user
-		.findUnique({ where: { Email: data.email } })
+	prisma.authme
+		.findUnique({ where: { Usuario: data.nick } })
 		.then((userValue) => {
 			if (userValue) {
-				if (bcrypt.compareSync(data.password, userValue?.Senha)) {
+				if (sha256(data.password) == userValue?.Senha) {
 					res.send({
 						success: true,
 						message: 'Logado com sucesso!',

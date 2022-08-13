@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,9 +7,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
-  ID          Int     @id @default(autoincrement())
-  Usuario     String  @unique @db.VarChar(255)
+model authme {
+  ID          Int     @id @default(autoincrement()) @db.UnsignedMediumInt
+  Usuario     String  @unique(map: "Usuario") @db.VarChar(255)
   NomeReal    String  @db.VarChar(255)
   Senha       String  @db.VarChar(255)
   IP          String? @db.VarChar(40)
@@ -23,10 +20,10 @@ model user {
   Mundo       String  @default("world") @db.VarChar(255)
   regData     BigInt  @default(0)
   regIP       String? @db.VarChar(40)
-  UltimoLoc   Float?
-  Pitch       Float?
-  Email       String? @unique @db.VarChar(255)
-  hasLogged   Boolean @default(false)
-  hasSession  Boolean @default(false)
-  toIP        String? @db.VarChar(32)
+  UltimoLoc   Float?  @db.Float
+  Pitch       Float?  @db.Float
+  Email       String? @db.VarChar(255)
+  hasLogged   Int     @default(0) @db.SmallInt
+  hasSession  Int     @default(0) @db.SmallInt
+  toTP        String? @db.VarChar(32)
 }

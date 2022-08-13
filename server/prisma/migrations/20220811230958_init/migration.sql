@@ -1,0 +1,24 @@
+-- CreateTable
+CREATE TABLE `authme` (
+    `ID` MEDIUMINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `Usuario` VARCHAR(255) NOT NULL,
+    `NomeReal` VARCHAR(255) NOT NULL,
+    `Senha` VARCHAR(255) NOT NULL,
+    `IP` VARCHAR(40) NULL,
+    `UltimoLogin` BIGINT NULL,
+    `PosX` DOUBLE NOT NULL DEFAULT 0,
+    `PosY` DOUBLE NOT NULL DEFAULT 0,
+    `PosZ` DOUBLE NOT NULL DEFAULT 0,
+    `Mundo` VARCHAR(255) NOT NULL DEFAULT 'world',
+    `regData` BIGINT NOT NULL DEFAULT 0,
+    `regIP` VARCHAR(40) NULL,
+    `UltimoLoc` FLOAT NULL,
+    `Pitch` FLOAT NULL,
+    `Email` VARCHAR(255) NULL,
+    `hasLogged` SMALLINT NOT NULL DEFAULT 0,
+    `hasSession` SMALLINT NOT NULL DEFAULT 0,
+    `toTP` VARCHAR(32) NULL,
+
+    UNIQUE INDEX `Usuario`(`Usuario`),
+    PRIMARY KEY (`ID`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
