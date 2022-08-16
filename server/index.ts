@@ -40,14 +40,14 @@ app.post('/register', (req: Request, res: Response) => {
 					message: 'Esse nome de usuário já esta cadastrado.',
 				});
 			} else {
-				user.password = sha256(user.password);
+				user.pass = sha256(user.pass);
 				console.log(user);
 
 				await prisma.authme.create({ data: {
 					Usuario: user.nick,
 					NomeReal: user.name,
-					Senha: user.password,
-					Email: user.email
+					Senha: user.pass,
+					Email: user.mail
 				}});
 
 				res.send({
@@ -73,7 +73,7 @@ app.post('/login', (req: Request, res: Response) => {
 		.findUnique({ where: { Usuario: data.nick } })
 		.then((userValue) => {
 			if (userValue) {
-				if (sha256(data.password) == userValue?.Senha) {
+				if (sha256(data.pass) == userValue?.Senha) {
 					res.send({
 						success: true,
 						message: 'Logado com sucesso!',
