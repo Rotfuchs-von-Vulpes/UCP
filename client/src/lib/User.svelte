@@ -1,7 +1,12 @@
 <script lang="ts">
-	export let logout;
+	export let logout: () => void;
+	export let user;
 </script>
 
-Área do usuário
+<h2>Área do usuário</h2>
 
-<button on:click="{logout}">Test</button>
+Nome de usuário: {user.nick}<br>
+Nome: {user.name}<br>
+E-Mail: {user.mail}<br>
+
+<button on:click="{logout}">Log out</button>

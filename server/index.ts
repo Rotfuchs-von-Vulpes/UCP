@@ -3,12 +3,29 @@ import { Request, Response } from 'express';
 import sha256 from 'sha256';
 import cors from 'cors';
 import { PrismaClient } from '@prisma/client';
+import crypto from 'crypto';
 
 const prisma = new PrismaClient();
 
 const app = express();
 
 let port = 3000;
+
+let connectedUsers: Map<string, string> = new Map();
+
+function login(nick: string) {
+	const buf = Buffer.alloc(10);
+	const hash = crypto.randomFillSync(buf).toString('hex');
+
+	console.log(hash);
+	connectedUsers.set(nick, hash);
+
+	return hash;
+}
+
+function logout(nick: string) {
+	connectedUsers.delete(nick);
+}
 
 app.use(cors());
 app.use(express.json());
@@ -21,10 +38,6 @@ app.listen(port, () => {
 app.get('/', (req: Request, res: Response) => {
 	res.send('Conectado ao servidor');
 });
-
-// app.get('/databaseStatus', (req: Request, res: Response) => {
-// 	res.send({ databaseStatus: databaseConnected });
-// });
 
 app.post('/register', (req: Request, res: Response) => {
 	let user = req.body;
@@ -48,11 +61,14 @@ app.post('/register', (req: Request, res: Response) => {
 					NomeReal: user.name,
 					Senha: user.pass,
 					Email: user.mail
-				}});
+				}}).then((userValue) => {
+					let hash = login(user.nick);
 
-				res.send({
-					success: true,
-					message: 'Registrado com sucesso',
+					res.send({
+						success: true,
+						message: 'Registrado com sucesso',
+						hash
+					});
 				});
 			}
 		})
@@ -74,10 +90,14 @@ app.post('/login', (req: Request, res: Response) => {
 		.then((userValue) => {
 			if (userValue) {
 				if (sha256(data.pass) == userValue?.Senha) {
+					const hash = login(data.nick);
+
 					res.send({
 						success: true,
 						message: 'Logado com sucesso!',
-						data: userValue?.Senha,
+						name: userValue.NomeReal,
+						mail: userValue.Email,
+						hash,
 					});
 				} else {
 					res.send({
@@ -102,3 +122,12 @@ app.post('/login', (req: Request, res: Response) => {
 		});
 });
 
+app.post('/logout', (req: Request, res: Response) => {
+	let data = req.body;
+
+	logout(data.nick);
+
+	res.send({
+		success: true,
+	})
+})
