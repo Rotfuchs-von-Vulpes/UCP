@@ -58,10 +58,9 @@ app.post('/register', (req: Request, res: Response) => {
 
 				await prisma.authme.create({ data: {
 					Usuario: user.nick,
-					NomeReal: user.name,
 					Senha: user.pass,
 					Email: user.mail
-				}}).then((userValue) => {
+				}}).then(() => {
 					let hash = login(user.nick);
 
 					res.send({
@@ -95,7 +94,6 @@ app.post('/login', (req: Request, res: Response) => {
 					res.send({
 						success: true,
 						message: 'Logado com sucesso!',
-						name: userValue.NomeReal,
 						mail: userValue.Email,
 						hash,
 					});

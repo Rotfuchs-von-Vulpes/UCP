@@ -10,7 +10,6 @@
 	let logged = localStorage.getItem('logged') === 'true';
 	let user = {
 		nick: localStorage.getItem('nick'),
-		name: localStorage.getItem('name'),
 		mail: localStorage.getItem('mail'),
 		hash: localStorage.getItem('hash'),
 	};
@@ -32,8 +31,8 @@
 		page = 0;
 	}
 
-	function register(nick, name, pass, mail) {
-		let data = { nick, name, pass, mail };
+	function register(nick, pass, mail) {
+		let data = { nick, pass, mail };
 
 		api
 			.post('/register', data)
@@ -44,13 +43,11 @@
 					page = 2;
 
 					user.nick = nick;
-					user.name = name;
 					user.mail = mail;
 					user.hash = res.data.hash;
 
 					localStorage.setItem('logged', 'true');
 					localStorage.setItem('nick', user.nick);
-					localStorage.setItem('name', user.name);
 					localStorage.setItem('mail', user.mail);
 					localStorage.setItem('hash', user.hash);
 				}
@@ -72,13 +69,11 @@
 					page = 2;
 
 					user.nick = nick;
-					user.name = res.data.name;
 					user.mail = res.data.mail;
 					user.hash = res.data.hash;
 
 					localStorage.setItem('logged', 'true');
 					localStorage.setItem('nick', user.nick);
-					localStorage.setItem('name', user.name);
 					localStorage.setItem('mail', user.mail);
 					localStorage.setItem('hash', user.hash);
 				}
@@ -94,13 +89,11 @@
 			page = 0;
 
 			user.nick = null;
-			user.name = null;
 			user.mail = null;
 			user.hash = null;
 
 			localStorage.setItem('logged', 'false');
 			localStorage.setItem('nick', null);
-			localStorage.setItem('name', null);
 			localStorage.setItem('mail', null);
 			localStorage.setItem('hash', null);
 		});

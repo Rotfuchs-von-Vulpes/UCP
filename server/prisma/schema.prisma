@@ -10,7 +10,6 @@ datasource db {
 model authme {
   ID          Int     @id @default(autoincrement()) @db.UnsignedMediumInt
   Usuario     String  @unique(map: "Usuario") @db.VarChar(255)
-  NomeReal    String  @db.VarChar(255)
   Senha       String  @db.VarChar(255)
   IP          String? @db.VarChar(40)
   UltimoLogin BigInt?
@@ -26,4 +25,16 @@ model authme {
   hasLogged   Int     @default(0) @db.SmallInt
   hasSession  Int     @default(0) @db.SmallInt
   toTP        String? @db.VarChar(32)
+}
+
+model players {
+  Nick String @id @db.VarChar(17)
+  Skin String @db.VarChar(19)
+}
+
+model skins {
+  Nick      String  @id @db.VarChar(19)
+  Value     String? @db.Text
+  Signature String? @db.Text
+  timestamp String? @db.Text
 }
